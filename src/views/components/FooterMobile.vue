@@ -16,7 +16,7 @@ const cartStore = useCartStore()
             <div>
                 <a href="" class="uk-text-decoration-none item">
                     <div class="logo">
-                        <img src="../../assets/logo-bl-bg" class="uk-border-circle" alt="" >
+                        <img src="../../assets/logo-sm.png" class="uk-border-circle" alt="" >
                     </div>
                 </a>
             </div>
