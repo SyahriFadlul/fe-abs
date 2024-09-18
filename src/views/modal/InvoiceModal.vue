@@ -57,7 +57,7 @@
                             </div>
                             <div class="rts-box-product uk-width-1-1 uk-flex@s uk-grid" uk-grid>
                                 <div class="uk-padding-remove uk-width-auto@s uk-inline@s uk-first-column">
-                                    <img src="../../assets/logo.svg" class="rts-product-image">
+                                    <img src="../../assets/logo.png" class="rts-product-image">
                                 </div>
                                 <div class="uk-width-auto@s uk-width-expand@m">
                                     <div class="rts-product-name rts-pointer">Iphone 12 Promax</div>

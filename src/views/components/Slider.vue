@@ -4,13 +4,13 @@
 <div class="uk-slider-items uk-child-width-1-2 uk-child-width-1-3@m uk-grid">
     <div>
         <div class="uk-panel">
-            <img src="images/slider1.jpg" width="400" height="600" alt="">
+            <!-- <img src="images/slider1.jpg" width="400" height="600" alt=""> -->
             <div class="uk-position-center uk-panel"><h1>1</h1></div>
         </div>
     </div>
     <div>
         <div class="uk-panel">
-            <img src="images/slider2.jpg" width="400" height="600" alt="">
+            <!-- <img src="images/slider2.jpg" width="400" height="600" alt=""> -->
             <div class="uk-position-center uk-panel"><h1>2</h1></div>
         </div>
     </div>

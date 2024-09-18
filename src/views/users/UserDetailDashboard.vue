@@ -168,7 +168,7 @@ onMounted(async () => {
                                             <div >
                                                 <ul class="responsive-image uk-margin-medium-bottom">
                                                     <li class="uk-flex uk-flex-center">
-                                                        <img src="../../assets/logo2.png"
+                                                        <img src="../../assets/logo.png"
                                                             alt="">
                                                     </li>
                                                 </ul>
