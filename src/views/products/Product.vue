@@ -87,9 +87,8 @@ onMounted(async () => {
     const page = parseInt(route.query.page) || 1
     productStore.loadPage(false)
     await productStore.getProducts(page)
-    productStore.setProductReady()
-    productStore.loadPage(true)
-    await fetching()    
+    // productStore.setProductReady()
+    productStore.loadPage(true)    
     
 })
 </script>
