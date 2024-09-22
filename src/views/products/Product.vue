@@ -36,8 +36,8 @@ const changePage = async (page) => {
 }
 
 async function fetching(){
-    // const res = await axios.options('https://cow-expert-plainly.ngrok-free.app/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg',
-    const res = await axios.get('http://localhost:8000/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg'
+    const res = await axios.options('https://cow-expert-plainly.ngrok-free.app/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg',
+    // const res = await axios.get('http://localhost:8000/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg'
         // ,{
         //     // responseType: 'blob',
         //     // mode : 'no-cors',
@@ -103,7 +103,7 @@ onMounted(async () => {
                     <div class="uk-margin-medium-bottom" v-for="product in productStore.p_response.data" :key="product.id">
                         <div class="uk-card-small uk-card-default uk-border-rounded uk-box-shadow-medium"
                             @click="detailProduct(product.id)">
-                            <img  :src="backendPath + 'storage/' + product.image" class="uk-width-1-1" style="height: 300px; width: 100%;"/>
+                            <img  :src="backendPath + 'storage/' + product.image" class="uk-width-1-1" style="height: 300px; width: 100%;" crossorigin="anonymous"/>
                             <div class="uk-card-body">
                                 <p class="uk-h4 uk-margin-remove-bottom" style="color: #13556F;">
                                     <strong>Rp{{ rupiahNum(product.price) }}</strong>
