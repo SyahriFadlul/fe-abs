@@ -37,26 +37,24 @@ const changePage = async (page) => {
 
 async function fetching(){
     // const res = await axios.options('https://cow-expert-plainly.ngrok-free.app/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg',
-    const res = await fetch('http://localhost:8000/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg',
-        {
-            // responseType: 'blob',
-            // mode : 'no-cors',
-            headers:{
-                // 'ngrok-skip-browser-warning' : true,
+    const res = await axios.get('http://localhost:8000/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg'
+        // ,{
+        //     // responseType: 'blob',
+        //     // mode : 'no-cors',
+        //     headers:{
+        //         // 'ngrok-skip-browser-warning' : true,
                             
-            }
-        }
+        //     }
+        // }
     )
+    console.log(res);
     
     // const res = await fetch('http://localhost:8000/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg')
-    const data = await res.blob()
-    img.value = URL.createObjectURL(data)
-    console.log(img.value);
-    const imgUrl = URL.createObjectURL(data);
-        
-        // Assuming your HTML has an img element with ID `imageElement`
-        const imgElement = document.getElementById('imageElement');
-        imgElement.src = imgUrl;
+    // const data = await res.blob()
+    // img.value = URL.createObjectURL(data)
+    // console.log(img.value);
+    // const imgUrl = URL.createObjectURL(data);
+    
         
 }
 
@@ -89,6 +87,7 @@ onMounted(async () => {
     await productStore.getProducts(page)
     // productStore.setProductReady()
     productStore.loadPage(true)    
+    // fetching()
     
 })
 </script>
