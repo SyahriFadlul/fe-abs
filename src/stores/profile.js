@@ -34,7 +34,7 @@ export const useProfileStore = defineStore("profile", {
     //buat profile user
     async getProfiles() {
       await axios
-        .get("api/p")
+        .get("api/profile")
         .then((res) => {
           console.log(res.data.data);
         })
@@ -62,13 +62,13 @@ export const useProfileStore = defineStore("profile", {
       }
       console.log(profileData.photo_profile);
       await axios
-        .post("api/p/" + id, formData, {
+        .post("api/profile/" + id, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
+        .then((res) => console.log(res.message))
+        .catch((err) => console.log(err.message));
     },
 
     // ini buat profile dashboard
@@ -79,7 +79,7 @@ export const useProfileStore = defineStore("profile", {
         this.profileUserOne = response.data.data[0];
         console.log(this.profileUserOne);
       } catch (error) {
-        console.log(error);
+        console.log(error.message);
       }
     },
 
@@ -87,13 +87,13 @@ export const useProfileStore = defineStore("profile", {
     async getProfile(id) {
       this.profileUser = [];
       await axios
-        .get("api/p/" + id)
+        .get("api/profile/" + id)
         .then((res) => {
           this.profileUser = res.data;
-          console.log(res);
+          // console.log(res);
         })
         .catch((err) => {
-          console.log(err);
+          console.log(err.message);
         });
     },
   },

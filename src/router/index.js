@@ -3,6 +3,8 @@ import { useAuthStore } from '../stores/auth'
 import Forbidden from '../views/components/Forbidden.vue'
 import NotFound from '../views/components/NotFound.vue'
 import Product from '../views/products/Product.vue'
+import nProgress from 'nprogress'
+import nprogress from 'nprogress'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -226,8 +228,11 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next)=>{
-  const authStore = useAuthStore()
-  await authStore.getRole()
+  const authStore = useAuthStore()  
+  
+  if(authStore.token[0]){
+    await authStore.getRole()
+  }
 
   if(to.meta.requiresRole && authStore.role !== 'admin'){
 
@@ -242,6 +247,20 @@ router.beforeEach(async (to, from, next)=>{
     next();
   }
   
+})
+
+router.beforeResolve( (to, from, next) => {
+
+  if(to.name){
+    nProgress.start()
+  }
+
+  next()
+})
+
+router.afterEach( (to, from) => {
+
+  nprogress.done()
 })
 
 

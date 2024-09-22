@@ -4,13 +4,17 @@ import { useProductStore } from '@/stores/product'
 import { useRouter, useRoute } from 'vue-router';
 import Slider from '@/views/components/Slider.vue';
 import { Bootstrap5Pagination } from 'laravel-vue-pagination';
+import axios from 'axios'
+import { useAuthStore } from '../../stores/auth';
 
 
 
 const router = useRouter()
 const route = useRoute()
 const productStore = useProductStore()
+const authStore = useAuthStore()
 const backendPath = import.meta.env.VITE_API_BASE_URL
+const img = ref('')
 
 
 const rupiahNum = function (num) {
@@ -31,19 +35,61 @@ const changePage = async (page) => {
     })
 }
 
+async function fetching(){
+    // const res = await axios.options('https://cow-expert-plainly.ngrok-free.app/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg',
+    const res = await fetch('http://localhost:8000/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg',
+        {
+            // responseType: 'blob',
+            // mode : 'no-cors',
+            headers:{
+                // 'ngrok-skip-browser-warning' : true,
+                            
+            }
+        }
+    )
+    
+    // const res = await fetch('http://localhost:8000/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg')
+    const data = await res.blob()
+    img.value = URL.createObjectURL(data)
+    console.log(img.value);
+    const imgUrl = URL.createObjectURL(data);
+        
+        // Assuming your HTML has an img element with ID `imageElement`
+        const imgElement = document.getElementById('imageElement');
+        imgElement.src = imgUrl;
+        
+}
+
+async function fetch2(){
+   await axios.options('https://cow-expert-plainly.ngrok-free.app/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg',{
+    headers:{'Access-Control-Allow-Origin' : 'https://cow-expert-plainly.ngrok-free.app',
+        'Content-Type' : 'application/json'
+    }
+    
+   })
+.then(data => {
+//     img.value = data
+//   console.log(img.value)
+console.log(data);
+
+})
+.catch(err => console.log(err)
+)
+}
+
 watch(() => route.query.page, async (newPage) => {
         await productStore.getProducts(parseInt(newPage) || 1);
     }
 );
 
 onMounted(async () => {
-    console.log(backendPath);
     const url = backendPath
     const page = parseInt(route.query.page) || 1
     productStore.loadPage(false)
     await productStore.getProducts(page)
     productStore.setProductReady()
     productStore.loadPage(true)
+    await fetching()    
     
 })
 </script>
@@ -51,7 +97,7 @@ onMounted(async () => {
     <main class="content">
         <div class="uk-container uk-margin-medium-top">
             <!-- <Slider />             -->
-            
+            <img :src="img" alt="">
             <div class="uk-container uk-margin-top" v-if="productStore.ready">
                 <p class="h1 uk-margin-small-bottom uk-margin-medium-top"> Rekomendasi Baru</p>
                 <div class="uk-grid-column-small uk-grid-row-small uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-text-left"
@@ -59,7 +105,7 @@ onMounted(async () => {
                     <div class="uk-margin-medium-bottom" v-for="product in productStore.p_response.data" :key="product.id">
                         <div class="uk-card-small uk-card-default uk-border-rounded uk-box-shadow-medium"
                             @click="detailProduct(product.id)">
-                            <img  :src="backendPath + '/storage/' + product.image" class="uk-width-1-1" style="height: 300px; width: 100%;"/>
+                            <img  :src="backendPath + 'storage/' + product.image" class="uk-width-1-1" style="height: 300px; width: 100%;"/>
                             <div class="uk-card-body">
                                 <p class="uk-h4 uk-margin-remove-bottom" style="color: #13556F;">
                                     <strong>Rp{{ rupiahNum(product.price) }}</strong>

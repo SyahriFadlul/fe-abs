@@ -15,8 +15,7 @@ const cartStore = useCartStore()
 
 onMounted(async()=>{  
   await productStore.getProducts()
-  // await authStore.getUserInformation()
-  
+  await authStore.getUserInformation()    
 })
 </script>
 <template>

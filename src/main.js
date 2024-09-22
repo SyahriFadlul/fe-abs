@@ -17,8 +17,7 @@ import Icons from 'uikit/dist/js/uikit-icons';
 import 'uikit/dist/css/uikit.min.css'
 import 'uikit/dist/js/uikit'
 import CKEditor from '@ckeditor/ckeditor5-vue';
-import he from 'he'
-import { decode } from 'entities'
+import '../node_modules/nprogress/nprogress.css' 
 
 
 // Import the CSS file to apply the default styling.

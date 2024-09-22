@@ -18,7 +18,7 @@ const authStore = useAuthStore();
                         <ul class="uk-navbar-nav">
                             <li style="">
                                 <a href="#" class="uk-text-normal uk-visible@s" style="color: black">Hello, {{
-                                    authStore.user.username
+                                    authStore.user.name
                                 }}<span uk-navbar-parent-icon></span></a>
                                 <div class="uk-navbar-dropdown uk-width-small"
                                     style="margin-top: 50px;">

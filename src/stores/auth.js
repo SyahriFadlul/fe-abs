@@ -11,9 +11,11 @@ export const useAuthStore = defineStore("auth",{
         authRole: [],
         authError:[],
         authStatus:null,
+        authToken:[],
     }),
     getters:{
         user: (state) => state.authUser,
+        token: (state) => state.authToken,
         role: (state) => state.authRole,
         error: (state) => state.authError,
         status: (state) => state.authStatus,
@@ -26,23 +28,27 @@ export const useAuthStore = defineStore("auth",{
         async getUserInformation(){
             const profileStore = useProfileStore()
             const cartStore = useCartStore()
-
-            try {
-                await this.getUser()
-    
-                const id = this.authUser.id
-                
-                await this.getRole()
-                await cartStore.getCarts()
-                await profileStore.getProfile(id)
-                
-            } catch (error) {
-                console.log(error);    
-            }                        
+            
+            if(this.authToken[0]){
+                try {
+                    await this.getUser()
+        
+                    const id = this.authUser.id
+                    
+                    await this.getRole()
+                    await cartStore.getCarts()
+                    await profileStore.getProfile(id)
+                    
+                } catch (error) {
+                    console.log(error.message);                                                                
+                }                        
+            }
         },
 
         async getToken (){
             await axios.get('sanctum/csrf-cookie')
+            .then(res => console.log(res)
+            )
         },
 
         async getUser (){            
@@ -51,7 +57,7 @@ export const useAuthStore = defineStore("auth",{
                 this.authUser= res.data
             })
             .catch(err=>{
-                console.log(err.response.data.message);
+                console.log(err.message);
             })            
         },
 
@@ -67,23 +73,22 @@ export const useAuthStore = defineStore("auth",{
 
         async handleLogin (data){            
             this.authError = []
-            await this.getToken()
-
+            // await this.getToken()
+            
             await axios.post("api/login", {
                 email:data.email,
                 password:data.password 
             })
             .then(async (res)=>{                
+                this.authToken = res.data.token
+                // console.log(res.data.message);
                 
-                await this.getUserInformation()
-                // console.log(typeof this.authRole);
+                await this.getUserInformation()                
                 if (this.authRole === 'admin') {
                     this.router.push('/dashboard')  
                 } else {
                     this.router.push('/')  
-                }
-               
-                // console.log(this.authRole);       
+                }                                     
             })
             .catch(err=>{
                 if(err.response.status === 422){
@@ -140,14 +145,16 @@ export const useAuthStore = defineStore("auth",{
             const profileStore = useProfileStore()
             const cartStore = useCartStore()
             await axios.post('api/logout')
-            .then( res => {console.log(res.data);})
+            .then( res => {
+                this.authToken = []
+                this.authUser = null
+                this.authRole = []
+                cartStore.clearCart()                                  
+                this.router.push('/')
+            })
             .catch( err => {console.log(err.message);})
-            localStorage.removeItem('auth')
-            this.authUser = null
-            this.authRole = []
-            cartStore.clearCart()                        
-            sessionStorage.clear();
-            this.router.push('/')
+                                  
+            
         },
 
         async handleForgotPassword (email) {
