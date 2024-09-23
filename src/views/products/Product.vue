@@ -78,7 +78,8 @@ async function fetch2(){
 }
 
 const getImageUrl = (imagePath) => {
-  const encodedUrl = encodeURIComponent(imagePath);
+    const fullUrl = `https://cow-expert-plainly.ngrok-free.app/storage/${imagePath}`;
+  const encodedUrl = encodeURIComponent(fullUrl);
   return `https://amoebabiolab.netlify.app/.netlify/functions/image-proxy?url=${encodedUrl}`;
 };
 
