@@ -77,8 +77,14 @@ async function fetch2(){
     }    
 }
 
-function getImageUrl(imagePath){
+async function getImageUrl(imagePath){
 
+    const res = await fetch('/.netlify/functions/proxy').then(
+            response => response.json()
+          ).catch ( err => console.log(err)
+          )
+
+        
     return `/api/proxy/storage/${imagePath}`
 }
 

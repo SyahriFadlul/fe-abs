@@ -1,7 +1,6 @@
 // Docs on event and context https://docs.netlify.com/functions/build/#code-your-function-2
-const fetch = require('node-fetch');
 
-const handler = async (event) => {
+exports.handler = async function (event) {
   const imageUrl = 'https://cow-expert-plainly.ngrok-free.app' + event.path.replace('/api/proxy', '');
     console.log("Requesting image from:", event.path);
     try {
@@ -37,4 +36,4 @@ const handler = async (event) => {
     }
 }
 
-module.exports = { handler }
+
