@@ -1,37 +1,37 @@
 import fetch from 'node-fetch';
 
 export async function handler (event, context) {
-  const imageUrl = 'https://cow-expert-plainly.ngrok-free.app' + event.path.replace('/api/proxy', '');
+    const imageUrl = 'https://cow-expert-plainly.ngrok-free.app' + event.path.replace('/api/proxy', '');
+    console.log("Requesting image from:", event.path);
+    try {
+        const response = await fetch(imageUrl, {
+            headers:{
+                'ngrok-skip-browser-warning' : true
+            }
+        });
+        const contentType = response.headers.get('content-type');
 
-  try {
-    const response = await fetch(imageUrl, {
-        headers:{
-            'ngrok-skip-browser-warning' : true
+        if (!response.ok) {
+        return {
+            statusCode: response.status,
+            body: `Error fetching image: ${response.statusText}`,
+            };
         }
-    });
-    const contentType = response.headers.get('content-type');
-
-    if (!response.ok) {
-      return {
-        statusCode: response.status,
-        body: `Error fetching image: ${response.statusText}`,
-      };
-    }
 
     const imageBuffer = await response.buffer();
 
     return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': contentType,
-      },
-      body: imageBuffer.toString('base64'),
-      isBase64Encoded: true,
-    };
-  } catch (error) {
-    return {
-      statusCode: 500,
-      body: `Server error: ${error.message}`,
-    };
-  }
+        statusCode: 200,
+        headers: {
+            'Content-Type': contentType,
+        },
+        body: imageBuffer.toString('base64'),
+        isBase64Encoded: true,
+        };
+    } catch (error) {
+        return {
+        statusCode: 500,
+        body: `Server error: ${error.message}`,
+        };
+    }
 }
