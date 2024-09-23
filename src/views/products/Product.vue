@@ -79,11 +79,12 @@ async function fetch2(){
 
 const getImageUrl = async (imagePath) => {
     const fullUrl = `https://cow-expert-plainly.ngrok-free.app/storage/${imagePath}`;
-    const res = await fetch(`https://amoebabiolab.netlify.app//.netlify/functions/proxy?url=${encodeURIComponent(fullUrl)}`)
-    const data  = await res.blob()
-    console.log(data);
+    const res = await fetch(`http://localhost:5173/.netlify/functions/proxy`)
+    // const data  = await res.json()
+    console.log(res);
     
-    return `https://amoebabiolab.netlify.app//.netlify/functions/proxy?url=${encodeURIComponent(fullUrl)}`;
+    
+    // return `http://localhost:5173/.netlify/functions/proxy?url=${encodeURIComponent(fullUrl)}`;
 };
 
 watch(() => route.query.page, async (newPage) => {
