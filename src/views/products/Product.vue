@@ -59,20 +59,27 @@ async function fetching(){
 }
 
 async function fetch2(){
-   await axios.options('https://cow-expert-plainly.ngrok-free.app/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg',{
-    headers:{'Access-Control-Allow-Origin' : 'https://cow-expert-plainly.ngrok-free.app',
-        'Content-Type' : 'application/json'
-    }
-    
-   })
-.then(data => {
-//     img.value = data
-//   console.log(img.value)
-console.log(data);
+    try {
+          const response = await axios.options("https://cow-expert-plainly.ngrok-free.app/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg", {
+            mode:'no-cors',
+            headers: {
+              'ngrok-skip-browser-warning': 'true'
+            }
+          })
+          console.log(response);          
+          
+          const blob = await response.blob();
+          product.imageBlobUrl = URL.createObjectURL(blob)
+        }
+    catch (error){
+        console.log(error);
+        
+    }    
+}
 
-})
-.catch(err => console.log(err)
-)
+function getImageUrl(imagePath){
+
+    return `/api/proxy/storage/${imagePath}`
 }
 
 watch(() => route.query.page, async (newPage) => {
@@ -87,7 +94,7 @@ onMounted(async () => {
     await productStore.getProducts(page)
     // productStore.setProductReady()
     productStore.loadPage(true)    
-    // fetching()
+    // fetch2()
     
 })
 </script>
@@ -95,7 +102,7 @@ onMounted(async () => {
     <main class="content">
         <div class="uk-container uk-margin-medium-top">
             <!-- <Slider />             -->
-            <img :src="img" alt="">
+            <!-- <img src="https://cow-expert-plainly.ngrok-free.app/storage/uploads/mM6LZFkA5UBJQWxXQiZIidhP8wjoZDpBrS3lHOYp.jpg" alt=""> -->
             <div class="uk-container uk-margin-top" v-if="productStore.ready">
                 <p class="h1 uk-margin-small-bottom uk-margin-medium-top"> Rekomendasi Baru</p>
                 <div class="uk-grid-column-small uk-grid-row-small uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-text-left"
@@ -103,7 +110,7 @@ onMounted(async () => {
                     <div class="uk-margin-medium-bottom" v-for="product in productStore.p_response.data" :key="product.id">
                         <div class="uk-card-small uk-card-default uk-border-rounded uk-box-shadow-medium"
                             @click="detailProduct(product.id)">
-                            <img  :src="backendPath + 'storage/' + product.image" class="uk-width-1-1" style="height: 300px; width: 100%;" crossorigin="anonymous"/>
+                            <img  :src="getImageUrl(product.image)" class="uk-width-1-1" style="height: 300px; width: 100%;" crossorigin="anonymous"/>
                             <div class="uk-card-body">
                                 <p class="uk-h4 uk-margin-remove-bottom" style="color: #13556F;">
                                     <strong>Rp{{ rupiahNum(product.price) }}</strong>
