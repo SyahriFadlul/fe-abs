@@ -77,16 +77,10 @@ async function fetch2(){
     }    
 }
 
-async function getImageUrl(imagePath){
-
-    const res = await fetch('/.netlify/functions/proxy').then(
-            response => response.json()
-          ).catch ( err => console.log(err)
-          )
-
-        
-    return `/api/proxy/storage/${imagePath}`
-}
+const getImageUrl = (imagePath) => {
+  const encodedUrl = encodeURIComponent(imagePath);
+  return `https://amoebabiolab.netlify.app/.netlify/functions/image-proxy?url=${encodedUrl}`;
+};
 
 watch(() => route.query.page, async (newPage) => {
         await productStore.getProducts(parseInt(newPage) || 1);

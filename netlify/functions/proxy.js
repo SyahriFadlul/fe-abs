@@ -1,39 +1,17 @@
-// Docs on event and context https://docs.netlify.com/functions/build/#code-your-function-2
+const fetch = require('node-fetch');
 
-exports.handler = async function (event) {
-  const imageUrl = 'https://cow-expert-plainly.ngrok-free.app' + event.path.replace('/api/proxy', '');
-    console.log("Requesting image from:", event.path);
-    try {
-        const response = await fetch(imageUrl, {
-            headers:{
-                'ngrok-skip-browser-warning' : true
-            }
-        });
-        const contentType = response.headers.get('content-type');
+exports.handler = async (event) => {
+  const url = decodeURIComponent(event.queryStringParameters.url);
+  const response = await fetch(url);
+  const buffer = await response.buffer();
 
-        if (!response.ok) {
-        return {
-            statusCode: response.status,
-            body: `Error fetching image: ${response.statusText}`,
-            };
-        }
-
-    const imageBuffer = await response.buffer();
-
-    return {
-        statusCode: 200,
-        headers: {
-            'Content-Type': contentType,
-        },
-        body: imageBuffer.toString('base64'),
-        isBase64Encoded: true,
-        };
-    } catch (error) {
-        return {
-        statusCode: 500,
-        body: `Server error: ${error.message}`,
-        };
-    }
-}
-
-
+  return {
+    statusCode: 200,
+    headers: {
+      'Content-Type': response.headers.get('content-type'),
+      'ngrok-skip-browser-warning': 'true',
+    },
+    body: buffer.toString('base64'),
+    isBase64Encoded: true,
+  };
+};
