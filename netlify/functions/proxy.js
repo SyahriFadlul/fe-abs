@@ -2,10 +2,15 @@ const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
   const url = decodeURIComponent(event.queryStringParameters.url);
+  console.log('Fetching image from:', url); // Add this line
+
   try {
     const response = await fetch(url);
-    const buffer = await response.buffer();
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image. Status: ${response.status}`);
+    }
 
+    const buffer = await response.buffer();
     return {
       statusCode: 200,
       headers: {
@@ -16,9 +21,10 @@ exports.handler = async (event) => {
       isBase64Encoded: true,
     };
   } catch (error) {
+    console.error('Error fetching image:', error.message); // Log the error
     return {
       statusCode: 404,
-      body: `Image not found: ${error.message}`,
+      body: `Error fetching image: ${error.message}`,
     };
   }
 };
