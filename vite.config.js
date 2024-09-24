@@ -17,6 +17,13 @@ export default defineConfig({
   //     include: ['src/**/*.{test,spec}.{js,ts}'],
   //   },
   // },
+  proxy: {
+    '/.netlify/functions': {
+      target: 'http://localhost:8888', // Netlify dev server
+      changeOrigin: true,
+      rewrite: (path) => path.replace(/^\/\.netlify\/functions/, '/.netlify/functions')
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

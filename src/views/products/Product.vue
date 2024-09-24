@@ -14,7 +14,7 @@ const route = useRoute()
 const productStore = useProductStore()
 const authStore = useAuthStore()
 const backendPath = import.meta.env.VITE_API_BASE_URL
-const img = ref('')
+const img = ref(null)
 
 
 const rupiahNum = function (num) {
@@ -78,19 +78,37 @@ async function fetch2(){
 }
 
 const getImageUrl = async (imagePath) => {
-    const fullUrl = `https://cow-expert-plainly.ngrok-free.app/storage/${imagePath}`;
-    const res = await fetch(`http://localhost:5173/.netlify/functions/proxy`)
-    // const data  = await res.json()
-    console.log(res);
+    // const fullUrl = await fetch(`https://cow-expert-plainly.ngrok-free.app/storage/${imagePath}`)
+    // const fullUrl = await fetch(`https://cow-expert-plainly.ngrok-free.app/storage/`)
+    // const fullUrl = await fetch(`/.netlify/edge-functions?image=${imagePath}`)
+    // const fullUrl = await fetch(`/.netlify/functions?image=${imagePath}`)
+    const fullUrl = await fetch(`/.netlify/functions/proxy?image=${imagePath}`)
+    const data = await fullUrl.blob()
+    img.value = URL.createObjectURL(data)
+    const imageBlobUrl = URL.createObjectURL(data)
+    // console.log( imageBlobUrl);
+    
+    // return img.value
+    
+    // const res = await fetch(`/.netlify/functions/proxy`)
+    // const data  = await res.text()
+    // console.log(data);
+    // const fullUrl = `https://cow-expert-plainly.ngrok-free.app/storage/uploads/mM6LZFkA5UBJQWxXQiZIidhP8wjoZDpBrS3lHOYp.jpg`;
+    // URL.revokeObjectURL(img)
+    // const res = await fetch(`/.netlify/functions/proxy`)
+    // const data  = await res.text()
+    // img.value = URL.createObjectURL(data)
+    // console.log(data);
+    
     
     
     // return `http://localhost:5173/.netlify/functions/proxy?url=${encodeURIComponent(fullUrl)}`;
 };
 
-watch(() => route.query.page, async (newPage) => {
-        await productStore.getProducts(parseInt(newPage) || 1);
-    }
-);
+// watch(() => route.query.page, async (newPage) => {
+//         await productStore.getProducts(parseInt(newPage) || 1);
+//     }
+// );
 
 onMounted(async () => {
     const url = backendPath
@@ -99,7 +117,9 @@ onMounted(async () => {
     await productStore.getProducts(page)
     // productStore.setProductReady()
     productStore.loadPage(true)    
-    // fetch2()
+    await getImageUrl('uploads/mM6LZFkA5UBJQWxXQiZIidhP8wjoZDpBrS3lHOYp.jpg')
+    // console.log(img.value);
+    
     
 })
 </script>
@@ -107,7 +127,9 @@ onMounted(async () => {
     <main class="content">
         <div class="uk-container uk-margin-medium-top">
             <!-- <Slider />             -->
-            <!-- <img src="https://cow-expert-plainly.ngrok-free.app/storage/uploads/mM6LZFkA5UBJQWxXQiZIidhP8wjoZDpBrS3lHOYp.jpg" alt=""> -->
+             <div class="uk-card uk-card-body uk-box-shadow">
+                 <!-- <img :src="getImageUrl" alt=""> -->
+             </div>
             <div class="uk-container uk-margin-top" v-if="productStore.ready">
                 <p class="h1 uk-margin-small-bottom uk-margin-medium-top"> Rekomendasi Baru</p>
                 <div class="uk-grid-column-small uk-grid-row-small uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-text-left"
@@ -115,7 +137,7 @@ onMounted(async () => {
                     <div class="uk-margin-medium-bottom" v-for="product in productStore.p_response.data" :key="product.id">
                         <div class="uk-card-small uk-card-default uk-border-rounded uk-box-shadow-medium"
                             @click="detailProduct(product.id)">
-                            <img  :src="getImageUrl(product.image)" class="uk-width-1-1" style="height: 300px; width: 100%;" crossorigin="anonymous"/>
+                            <img  :src="img" class="uk-width-1-1" style="height: 300px; width: 100%;" crossorigin="anonymous"/>
                             <div class="uk-card-body">
                                 <p class="uk-h4 uk-margin-remove-bottom" style="color: #13556F;">
                                     <strong>Rp{{ rupiahNum(product.price) }}</strong>
