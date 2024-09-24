@@ -12,6 +12,7 @@ import { useAuthStore } from '../../stores/auth';
 const router = useRouter()
 const route = useRoute()
 const productStore = useProductStore()
+const products = productStore.p_response.data;
 const authStore = useAuthStore()
 const backendPath = import.meta.env.VITE_API_BASE_URL
 const img = ref(null)
@@ -85,10 +86,10 @@ const getImageUrl = async (imagePath) => {
     const fullUrl = await fetch(`/.netlify/functions/proxy?image=${imagePath}`)
     const data = await fullUrl.blob()
     img.value = URL.createObjectURL(data)
-    const imageBlobUrl = URL.createObjectURL(data)
+    // const imageBlobUrl = URL.createObjectURL(data)
     // console.log( imageBlobUrl);
     
-    // return img.value
+    return URL.createObjectURL(data);
     
     // const res = await fetch(`/.netlify/functions/proxy`)
     // const data  = await res.text()
@@ -116,6 +117,10 @@ onMounted(async () => {
     productStore.loadPage(false)
     await productStore.getProducts(page)
     // productStore.setProductReady()
+    await Promise.all(products.map(async (product) => {
+        product.imageUrl = await getImageUrl(product.image)
+        await delay(200) // Store the blob URL in product
+    }))
     productStore.loadPage(true)    
     await getImageUrl('uploads/mM6LZFkA5UBJQWxXQiZIidhP8wjoZDpBrS3lHOYp.jpg')
     // console.log(img.value);
@@ -137,7 +142,7 @@ onMounted(async () => {
                     <div class="uk-margin-medium-bottom" v-for="product in productStore.p_response.data" :key="product.id">
                         <div class="uk-card-small uk-card-default uk-border-rounded uk-box-shadow-medium"
                             @click="detailProduct(product.id)">
-                            <img  :src="img" class="uk-width-1-1" style="height: 300px; width: 100%;" crossorigin="anonymous"/>
+                            <img  :src="product.imageUrl" class="uk-width-1-1" style="height: 300px; width: 100%;" crossorigin="anonymous"/>
                             <div class="uk-card-body">
                                 <p class="uk-h4 uk-margin-remove-bottom" style="color: #13556F;">
                                     <strong>Rp{{ rupiahNum(product.price) }}</strong>
