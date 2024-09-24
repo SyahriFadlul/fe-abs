@@ -110,17 +110,13 @@ const getImageUrl = async (imagePath) => {
 //         await productStore.getProducts(parseInt(newPage) || 1);
 //     }
 // );
-
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 onMounted(async () => {
     const url = backendPath
     const page = parseInt(route.query.page) || 1
     productStore.loadPage(false)
     await productStore.getProducts(page)
-    // productStore.setProductReady()
-    await Promise.all(products.map(async (product) => {
-        product.imageUrl = await getImageUrl(product.image)
-        await delay(200) // Store the blob URL in product
-    }))
+    // productStore.setProductReady()   
     productStore.loadPage(true)    
     await getImageUrl('uploads/mM6LZFkA5UBJQWxXQiZIidhP8wjoZDpBrS3lHOYp.jpg')
     // console.log(img.value);
@@ -139,10 +135,10 @@ onMounted(async () => {
                 <p class="h1 uk-margin-small-bottom uk-margin-medium-top"> Rekomendasi Baru</p>
                 <div class="uk-grid-column-small uk-grid-row-small uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-text-left"
                     uk-grid>
-                    <div class="uk-margin-medium-bottom" v-for="product in productStore.p_response.data" :key="product.id">
+                    <div class="uk-margin-medium-bottom" v-for="product in productStore.item" :key="product.id">
                         <div class="uk-card-small uk-card-default uk-border-rounded uk-box-shadow-medium"
                             @click="detailProduct(product.id)">
-                            <img  :src="product.imageUrl" class="uk-width-1-1" style="height: 300px; width: 100%;" crossorigin="anonymous"/>
+                            <img  :src="product.imageUrl" loading="lazy"class="uk-width-1-1" style="height: 300px; width: 100%;" crossorigin="anonymous"/>
                             <div class="uk-card-body">
                                 <p class="uk-h4 uk-margin-remove-bottom" style="color: #13556F;">
                                     <strong>Rp{{ rupiahNum(product.price) }}</strong>

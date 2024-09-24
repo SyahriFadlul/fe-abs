@@ -49,10 +49,30 @@ export const useProductStore = defineStore("product", {
       this.errResp = [];
       this.productReady = false;
       this.productError = [];
-      const response = await axios.get(`api/products?page=${page}`);
-      this.productName = response.data.data;
-      this.productResponse = response.data
-      // console.log(response);                  
+
+      try {
+        const response = await axios.get(`api/products?page=${page}`)
+        // console.log(response);
+        // this.productName = response.data.data;
+        this.productResponse = response.data
+        const productsWithImages = await Promise.all(
+          response.data.data.map(async (p) => {
+            if (p.image) {
+              p.imageUrl = await this.getImageUrl(p.image); // Ensure awaiting the image URL
+            }
+            return p; // Return the product with the imageUrl added
+          })
+        );
+
+        // Set the productName array once all images are fetched
+        this.productName = productsWithImages;
+        console.log(this.productName);
+        
+        
+        
+      } catch (error) {
+        console.log(error.message)          
+      }
     },
 
     async getProduct(id) {
@@ -201,6 +221,13 @@ export const useProductStore = defineStore("product", {
         console.error('Failed to fetch image:', error);
         return ''; 
       }
+    },
+
+    async getImageUrl(imagePath){
+      const fullUrl = await fetch(`/.netlify/functions/proxy?image=${imagePath}`)
+      const data = await fullUrl.blob()      
+
+      return URL.createObjectURL(data)
     },
   },
   persist: true,
