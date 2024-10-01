@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import UIkit from 'uikit'
 import { useAuthStore } from './auth'
+import { useProductStore } from './product'
 
 
 export const useCartStore = defineStore('cart',{
@@ -169,12 +170,31 @@ export const useCartStore = defineStore('cart',{
         },
 
         async getCarts(){
+            const productStore = useProductStore()
+
             await axios.get('api/cart')
-            .then(res=>{
-                this.cartItem = res.data.data
+            .then( async (res) =>{
+                // this.cartItem = res.data.data    
+                const cartWithImg = await Promise.all(
+                    res.data.data.map(async (i) => {
+                      if (i.product_id.image) {
+                        i.product_id.imageUrl = await productStore.getImageUrl(i.product_id.image); 
+                      }
+                      
+                      return i; 
+                    })
+                  );                           
+                   
+                this.cartItem = cartWithImg
+                    
                 this.getTotalSelectedItem()
                 this.getTotalItem()
                 this.getTotalPrice()
+                // const imageUrl = await productStore.getImageUrl(this.cartItem[0].product_id.image)
+                // this.cartItem[0].product_id.push()
+                
+                
+                // console.log(this.cartItem);
             })
             .catch(err=>{
                 console.log(err.message);
@@ -277,7 +297,7 @@ export const useCartStore = defineStore('cart',{
         async moveItemToWishlist(data){
             const authStore = useAuthStore()
 
-            await axios.post('/api/cart-to-wishlist', {
+            await axios.post('api/cart-to-wishlist', {
                 id: data.id,
                 user_id: data.user_id,
                 product_id: data.product_id.id,

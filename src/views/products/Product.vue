@@ -36,80 +36,10 @@ const changePage = async (page) => {
     })
 }
 
-async function fetching(){
-    const res = await axios.options('https://cow-expert-plainly.ngrok-free.app/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg',
-    // const res = await axios.get('http://localhost:8000/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg'
-        // ,{
-        //     // responseType: 'blob',
-        //     // mode : 'no-cors',
-        //     headers:{
-        //         // 'ngrok-skip-browser-warning' : true,
-                            
-        //     }
-        // }
-    )
-    console.log(res);
-    
-    // const res = await fetch('http://localhost:8000/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg')
-    // const data = await res.blob()
-    // img.value = URL.createObjectURL(data)
-    // console.log(img.value);
-    // const imgUrl = URL.createObjectURL(data);
-    
-        
-}
-
-async function fetch2(){
-    try {
-          const response = await axios.options("https://cow-expert-plainly.ngrok-free.app/storage/uploads/PpGdzz11k6xXdpZtS5YmSIl2L0kFRm7CHzuXk5Jj.jpg", {
-            mode:'no-cors',
-            headers: {
-              'ngrok-skip-browser-warning': 'true'
-            }
-          })
-          console.log(response);          
-          
-          const blob = await response.blob();
-          product.imageBlobUrl = URL.createObjectURL(blob)
-        }
-    catch (error){
-        console.log(error);
-        
-    }    
-}
-
-const getImageUrl = async (imagePath) => {
-    // const fullUrl = await fetch(`https://cow-expert-plainly.ngrok-free.app/storage/${imagePath}`)
-    // const fullUrl = await fetch(`https://cow-expert-plainly.ngrok-free.app/storage/`)
-    // const fullUrl = await fetch(`/.netlify/edge-functions?image=${imagePath}`)
-    // const fullUrl = await fetch(`/.netlify/functions?image=${imagePath}`)
-    const fullUrl = await fetch(`/.netlify/functions/proxy?image=${imagePath}`)
-    const data = await fullUrl.blob()
-    img.value = URL.createObjectURL(data)
-    // const imageBlobUrl = URL.createObjectURL(data)
-    // console.log( imageBlobUrl);
-    
-    return URL.createObjectURL(data);
-    
-    // const res = await fetch(`/.netlify/functions/proxy`)
-    // const data  = await res.text()
-    // console.log(data);
-    // const fullUrl = `https://cow-expert-plainly.ngrok-free.app/storage/uploads/mM6LZFkA5UBJQWxXQiZIidhP8wjoZDpBrS3lHOYp.jpg`;
-    // URL.revokeObjectURL(img)
-    // const res = await fetch(`/.netlify/functions/proxy`)
-    // const data  = await res.text()
-    // img.value = URL.createObjectURL(data)
-    // console.log(data);
-    
-    
-    
-    // return `http://localhost:5173/.netlify/functions/proxy?url=${encodeURIComponent(fullUrl)}`;
-};
-
-// watch(() => route.query.page, async (newPage) => {
-//         await productStore.getProducts(parseInt(newPage) || 1);
-//     }
-// );
+watch(() => route.query.page, async (newPage) => {
+        await productStore.getProducts(parseInt(newPage) || 1);
+    }
+);
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 onMounted(async () => {
     const url = backendPath
@@ -117,11 +47,8 @@ onMounted(async () => {
     productStore.loadPage(false)
     await productStore.getProducts(page)
     // productStore.setProductReady()   
-    productStore.loadPage(true)    
-    await getImageUrl('uploads/mM6LZFkA5UBJQWxXQiZIidhP8wjoZDpBrS3lHOYp.jpg')
-    // console.log(img.value);
-    
-    
+    productStore.loadPage(true) 
+                   
 })
 </script>
 <template>

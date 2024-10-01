@@ -12,7 +12,6 @@ export const useProvinceStore = defineStore('province', {
         async getProvinces(){
             await axios.get('api/provinces')
             .then(res=>{
-                console.log(res);
                 this.provinceIndex = res.data
             })
             .catch(err=>{

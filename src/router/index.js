@@ -252,6 +252,7 @@ router.beforeEach(async (to, from, next)=>{
 router.beforeResolve( (to, from, next) => {
 
   if(to.name){
+    nProgress.configure({ showSpinner: false })
     nProgress.start()
   }
 

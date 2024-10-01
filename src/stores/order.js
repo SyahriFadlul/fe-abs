@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useCourierStore } from './courier'
 import { useCartStore } from './cart'
 import { useAddressStore } from './address'
+import { useProductStore } from './product'
 
 export const useOrderStore = defineStore('order', {
     state: () => ({
@@ -27,10 +28,11 @@ export const useOrderStore = defineStore('order', {
             const isAddressSelected = Object.keys(useAddress.selectAddress).length > 0 ? true : false
             const isShipmentSelected = Object.keys(courierStore.courier).length > 0 ? true : false
             const hasItemsInOrder = this.totalPrice !== 0 && this.totalQty !== 0 ? true : false
+            const isCourierServiceSelected = courierStore.courierService ? true : false
             // let x = isAddressSelected + " address|shipment " + isShipmentSelected;
             // console.log(hasItemsInOrder);
             // console.log(x);
-            return isAddressSelected && isShipmentSelected && hasItemsInOrder
+            return isAddressSelected && isShipmentSelected && hasItemsInOrder && isCourierServiceSelected
             
         },
         chart: (state) => state.chartData,
@@ -56,13 +58,33 @@ export const useOrderStore = defineStore('order', {
             this.orderTotalPrice = this.orderSubTotal + courierStore.courierPrice
         },
 
+        getTotalWeight(){
+            const weights = this.userOrders.map(item => parseInt(item.product_id.weight))
+            const totalWeight = weights.reduce((t, w) => t + w, 0)            
+            
+            return totalWeight
+        },
+
         async getOrders(){
 
         },
         
         async getUserOrder(){
-            await axios.get('/api/order-user/')
-            .then( res => {
+            const productStore = useProductStore()
+
+            await axios.get('api/order-user/')
+            .then( async (res) => {
+                const orderWithImg = await Promise.all(
+                    res.data.map(async (i) => {
+                      if (i.product_id.image) {
+                        i.product_id.imageUrl = await productStore.getImageUrl(i.product_id.image); 
+                      }
+                      
+                      return i; 
+                    })
+                  );                           
+                   
+                this.userOrders = orderWithImg
                 this.userOrders = res.data
             })
             .catch( err => {
@@ -76,12 +98,13 @@ export const useOrderStore = defineStore('order', {
             const cartStore = useCartStore()
             console.log(cartStore.total);
             
-            await axios.post('/api/order', {                
+            await axios.post('api/order', {                
                 user_id: userId,                
                 product_id: ids,
                 qty: qtys,
                 total_amount: cartStore.total,
-                status: 'Unpaid'
+                status: 'Unpaid',
+                shipment_cost: 0
             })
             .then( res => {
                 this.currentOrderId = res.data

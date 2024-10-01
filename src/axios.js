@@ -15,10 +15,12 @@ const protectedRoutes = [
     { url: 'api/profile', methods: ['GET', 'POST', 'PUT', 'DELETE'] },    
     // { url: 'api/user-profiles', methods: ['PUT'] },              
     { url: 'api/cart', methods: ['GET', 'POST', 'PUT', 'DELETE'] },     
-    { url: 'api/order', methods: ['POST', 'PUT', 'DELETE'] },    
-    { url: 'api/wishlist', methods: ['POST', 'PUT', 'DELETE'] }, 
+    { url: 'api/order', methods: ['GET', 'POST', 'PUT', 'DELETE'] },    
+    { url: 'api/wishlist', methods: ['GET', 'POST', 'PUT', 'DELETE'] }, 
     { url: 'api/address', methods: ['GET', 'POST', 'PUT', 'DELETE'] }, 
     { url: 'api/set-main-address', methods: ['PUT'] }, 
+    { url: 'api/courier-cost', methods: ['POST'] }, 
+    { url: 'api/checkout', methods: ['POST'] }, 
     { url: 'api/role', methods: ['GET'] }, 
     { url: 'api/inv', methods: ['GET', 'POST', 'PUT', 'DELETE'] },         
     { url: 'api/verify-email', methods: ['GET'] },                     //auth 
@@ -27,6 +29,7 @@ const protectedRoutes = [
 ]
 
 axios.interceptors.request.use(function (config) {
+    nProgress.configure({ showSpinner: false })
     nProgress.start()
 
     const authStore = useAuthStore()

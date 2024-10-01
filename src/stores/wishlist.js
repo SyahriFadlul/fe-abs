@@ -1,6 +1,7 @@
 import axios from "axios";
 import  {defineStore}  from "pinia";
 import { useCartStore } from "./cart";
+import { useProductStore } from "./product";
 
 export const useWishlistStore = defineStore('wishlist', {
     state: () => ({
@@ -11,10 +12,22 @@ export const useWishlistStore = defineStore('wishlist', {
     },
     actions:{
         async getWishlists(){
-            await axios.get('/api/wishlist')
-            .then(res=>{
-                console.log(res);
-                this.wishlists = res.data
+            const productStore = useProductStore()
+            await axios.get('api/wishlist')
+            .then(async (res)=>{
+                console.log(res.data);
+                const wishListWithImg = await Promise.all(
+                    res.data.map(async (i) => {
+                      if (i.product_id.image) {
+                        i.product_id.imageUrl = await productStore.getImageUrl(i.product_id.image); 
+                      }
+                      
+                      return i; 
+                    })
+                  );                           
+                   
+                // this.cartItem = cartWithImg
+                this.wishlists = wishListWithImg
             })
             .catch(err=>{
                 console.log(err);
@@ -40,7 +53,7 @@ export const useWishlistStore = defineStore('wishlist', {
         },
 
         async deleteItem(id){
-            await axios.delete(`/api/wishlist/${id}`)
+            await axios.delete(`api/wishlist/${id}`)
             .then(async (res) => {
                 console.log(res);
                 await this.getWishlists()

@@ -60,8 +60,6 @@ onMounted(async () => {
     }
     await authStore.getUser()
     await authStore.getRole()
-    console.log(backendPath +'/storage/' + productStore.product.image);
-    
 })
 
 </script>
@@ -79,7 +77,7 @@ onMounted(async () => {
                 <div class="uk-grid-small uk-child-width-1-2" uk-grid>
                     <div class="uk-width-auto@s uk-width-1-2@m uk-width-1-1 uk-margin-medium-bottom">
                         <div class="uk-visible-toggle">
-                            <img class="main-img" :src="backendPath +'/storage/' + productStore.product.image" alt="">
+                            <img class="main-img" :src="productStore.product.imageUrl" alt="">
                         </div>
                     </div>
                     <div class="uk-width-expand@s uk-margin-medium-left@m uk-width-1-1 uk-margin-top">

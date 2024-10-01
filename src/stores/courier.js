@@ -1,18 +1,43 @@
 import {defineStore} from 'pinia'
 import axios from 'axios'
 import { useOrderStore } from './order'
+import { useAddressStore } from './address'
 
 export const useCourierStore = defineStore('courier', {
     state: () => ({
         courierIndex: [], //dashboard
-        courierSelected: [], //checkout
+        courierSelected: {}, //checkout
+        selectedCourierDetail: [], //kurir yang dipilih w/ details
+        selectedService: null,
+        loading: false //fetching courier services
     }),
     getters: {
         couriers: (state) => state.courierIndex,
         courier: (state) => state.courierSelected,
-        courierName() {return this.courier.courier},
-        courierPrice() {return this.courier.price},
-        courierTimeToDelivery() {return this.courier.estimated_delivery_time},
+        courierName() {return this.selectedCourierDetail?.code || ''},
+        courierService: (state) => state.selectedService,
+        // selectedCourierService(state) {
+
+        //     return state.selectedCourierDetail.},
+        courierPrice() {return this.courierService?.cost?.[0]?.value},
+        courierTimeToDelivery() {
+            let etd = this.courierService?.cost?.[0]?.etd
+            if(etd){
+                let slicedEtd = etd.includes('HARI') ? etd.slice(-0,-4) : etd
+                return slicedEtd}
+            },
+        async cost(){
+            const addressStore = useAddressStore()
+            const orderStore = useOrderStore()
+
+            const totalWeight = orderStore.getTotalWeight()
+            this.loading = true
+            const costDetail  = await this.handleCourier(this.courierSelected.name, totalWeight, addressStore.selectAddress.city_id, addressStore.selectAddress.province_id)
+            this.selectedCourierDetail = costDetail
+            this.loading = false
+            
+        },
+        services: (state) => state.selectedCourierDetail?.costs || [],
 
     },
     actions: {
@@ -31,19 +56,54 @@ export const useCourierStore = defineStore('courier', {
             orderStore.getTotalPrice()
         },
 
+        async populateServices(courier){
+            this.selectedCourierDetail = []
+            this.selectedService = null
+            this.courierSelected.name = courier
+            await this.cost
+
+            console.log(this.selectedCourierDetail);
+            
+        },
+
+        setSelectedService(serviceName){
+            const orderStore = useOrderStore()
+
+            this.selectedService = this.selectedCourierDetail.costs.find( s => s.service === serviceName)
+            
+            orderStore.getTotalPrice()
+        },
+
         async getCouriers(){
-            await axios.get('/api/courier')
+            this.courierSelected = {}
+            this.selectedCourierDetail = []
+            await axios.get('api/courier')
             .then( res => {
                 this.courierIndex = res.data
-                this.courierIndex.forEach(courier => courier.selected = false)
+                // this.courierIndex.forEach(courier => courier.selected = false)
             })
             .catch( err => {
                 console.log(err);
             })
         },
 
+        async handleCourier(courier, weight, cityId, provinceId){
+            try {
+                const res = await axios.post('api/courier-cost', {
+                    courier: courier,
+                    weight: weight,
+                    city_id: cityId,
+                    province_id: provinceId,
+                });
+                return res.data;
+            } catch (err) {
+                console.error(err);
+                return null; 
+            }
+        }
+
     },
     persist: {
-        storage: sessionStorage
+        storage: localStorage
     }
 })

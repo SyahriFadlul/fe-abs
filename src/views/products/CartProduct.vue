@@ -61,7 +61,7 @@ onMounted(async () =>{
                                     <div class="">
                                         <label class="">
                                             <input class="uk-checkbox uk-border-rounded" type="checkbox" :checked="product.selected" @input="cartStore.changeToChecked(index)">
-                                            <img id="img" class="uk-margin-small-left" :src="backendPath + '/storage/' + product.product_id.image" alt="" width="200">
+                                            <img id="img" class="uk-margin-small-left" :src="product.product_id.imageUrl" alt="" width="200">
                                         </label>
                                     </div>
                                 </div>

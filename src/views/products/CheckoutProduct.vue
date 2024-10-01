@@ -34,18 +34,17 @@ const rupiahNum = function (num) {
 function handlePaymentMethodButton(data){
     UIkit.modal("#modal-payment-method-checkout").show();
 }
-
 onMounted(async () => {
     productStore.loadPage(false)
     await orderStore.getUserOrder()
     if (orderStore.orderId === null) {
         console.log('empty order')
         router.push('/')
-    }
+    }    
     productStore.loadPage(true)
     orderStore.getSubTotal()
     orderStore.getTotalItem()
-    await courierStore.getCouriers()    
+    await courierStore.getCouriers()
     
 })
 </script>
@@ -123,13 +122,13 @@ onMounted(async () => {
                                         <div class="uk-width-auto uk-first-column">
                                             <label class="">
                                                 <img class="uk-margin-small-left"
-                                                    :src="backendPath + '/storage/' + item.product_id.image"
+                                                    :src="item.product_id.imageUrl"
                                                     alt="" width="79" height="79">
                                             </label>
                                         </div>
                                         <div class="uk-width-expand">
                                             <div class="">{{ item.product_id.name }}</div>
-                                            <div class="uk-text-muted" style="font-size: 12px;">{{ item.product_id.storage }}, {{ item.qty }}Barang</div>
+                                            <div class="uk-text-muted" style="font-size: 12px;">{{ item.qty }} Barang, {{ item.product_id.weight }} gram</div>
                                             <div class="uk-margin-small-top uk-text-bold">Rp{{ rupiahNum(item.product_id.price) }}</div>
                                         </div>
                                     </div>
@@ -137,13 +136,15 @@ onMounted(async () => {
                             </div>
                         </div>
                         <div class="uk-width-auto uk-float-right">
-                            <button @click="showPickShipmentModal" class="uk-button uk-button-default uk-border-rounded uk-margin-remove-bottom" 
-                            style="color:white;font-weight: 500;font-size: 16px;background-color: #13556F;width: 240px;height: 50px;">
+                            <button @click="showPickShipmentModal" class="uk-button uk-button-default uk-border-rounded uk-margin-remove-bottom shipment"
+                            style="color:white;font-weight: 500;font-size: 16px;background-color: #13556F;width: 240px;height: 50px;"
+                            :disabled="addressStore.selectAddress < 1"
+                            :uk-tooltip="addressStore.selectAddress < 1 ? 'Pilih alamat tujuan terlebih dahulu' : ''">
                                 Pilih Pengiriman
                             </button>
-                            <div class="uk-margin-small-top uk-margin-small-left" v-if="courierStore.courierName">
-                                <p class="uk-margin-remove">{{ courierStore.courierName }} Rp{{ rupiahNum(courierStore.courierPrice) }}</p>
-                                <p class="uk-margin-remove">Estimasi tiba {{ courierStore.courierTimeToDelivery }} jam</p>
+                            <div class="uk-margin-small-top uk-margin-small-left" v-if="courierStore.courierName && courierStore.courierTimeToDelivery">
+                                <p class="uk-margin-remove"><span class="uk-text-uppercase">{{ courierStore.courierName }}</span> Rp{{ rupiahNum(courierStore.courierPrice) }}</p>
+                                <p class="uk-margin-remove">Estimasi tiba {{ courierStore.courierTimeToDelivery }} Hari</p>
                             </div>
                             <div class="uk-text-danger uk-margin-small-top uk-margin-small-left" v-else style="font-weight: 400;font-size: 12px ;"> Pengiriman harus dipilih</div>
                             <shipmentModal/>
@@ -167,7 +168,7 @@ onMounted(async () => {
                         <div class="uk-margin-remove-top uk-grid uk-grid-small uk-width-expand uk-margin-remove-bottom"
                             uk-grid>
                             <div class="uk-margin-small uk-first-column uk-width-expand">
-                                <p class="">Total Harga ( {{ orderStore.totalQty }} barang)</p>
+                                <p class="">Total Harga <br>( {{ orderStore.totalQty }} barang)</p>
                             </div>
                             <div class="uk-text-right uk-width-auto">
                                 Rp{{ rupiahNum(orderStore.subTotal) }}
@@ -385,5 +386,11 @@ button:disabled.chs-py {
     height: 24px;
     border-radius: 20px 20px;
     animation: pulse-bg 1s infinite; 
+}
+
+button:disabled.shipment {
+    background-color: aquamarine !important;
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
 }
 </style>

@@ -29,10 +29,11 @@ let buttonStatus = ref(false)
 const paymentData = ref({
     orderId: '',
     paymentMethod: '',
-    paymentAmount: '',
+    paymentAmount: 0,
     customerVaName:'' ,
     customer_id: '', //user_id
-    address_id: ''
+    address_id: '',
+    shipment_cost: 0
 })
 
 function detailSelectedPayment(paymentType, selectedPayment){//untuk tampilan detail di modal ke-2
@@ -51,6 +52,7 @@ async function handlePayButton(){//buat request ke server
     paymentData.value.customerVaName    = profileStore.user.firstName
     paymentData.value.customer_id       = authStore.user.id
     paymentData.value.address_id        = addressStore.selectAddress.id
+    paymentData.value.shipment_cost     = courierStore.courierPrice
 
     // data for testing
     // paymentData.value.paymentMethod     = 'VA'
@@ -66,9 +68,9 @@ async function handlePayButton(){//buat request ke server
     // paymentData.value.province          = 'Jawa Barbar'
 
     await paymentStore.createNewInvoice(paymentData.value)
-    UIkit.modal('#modal-payment-method-checkout2').hide()
-    router.push('/order-list')
-    window.open(paymentStore.paymentUrl)
+    // UIkit.modal('#modal-payment-method-checkout2').hide()
+    // router.push('/order-list')
+    // window.open(paymentStore.paymentUrl)
 }
  
 </script>
@@ -172,7 +174,7 @@ async function handlePayButton(){//buat request ke server
                     </div>
                 </div>
                 <div class="uk-flex uk-flex-center">
-                    <button class="uk-button uk-button-large uk-border-rounded py-btn uk-margin-bottom" @click="handlePayButton()" :disabled="buttonStatus">Bayar Sekarang</button>                
+                    <button class="uk-button uk-button-large uk-border-rounded py-btn uk-margin-bottom" @click="handlePayButton()" >Bayar Sekarang</button>                
                 </div>
             </div>
         </div>

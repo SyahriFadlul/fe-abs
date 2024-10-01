@@ -4,7 +4,7 @@ import UIkit from "uikit";
 
 export const useProductStore = defineStore("product", {
   state: () => ({
-    productName: [],
+    productIndex: [],
     singleProduct:[],
     productError: [],
     errResp: [],
@@ -15,7 +15,7 @@ export const useProductStore = defineStore("product", {
     imageCache: new Map()
   }),
   getters: {
-    item: (state) => state.productName,
+    item: (state) => state.productIndex,
     product: (state) => state.singleProduct,
     p_response: (state) => state.productResponse,
     error: (state) => state.productError,
@@ -38,10 +38,10 @@ export const useProductStore = defineStore("product", {
     },
 
     saveImage(image, image2, image3, image4) {
-      this.productName.image = image;
-      this.productName.image2 = image2;
-      this.productName.image3 = image3;
-      this.productName.image4 = image4;
+      this.productIndex.image = image;
+      this.productIndex.image2 = image2;
+      this.productIndex.image3 = image3;
+      this.productIndex.image4 = image4;
       UIkit.modal("#modal-show-gallery").hide();
     },
 
@@ -53,23 +53,19 @@ export const useProductStore = defineStore("product", {
       try {
         const response = await axios.get(`api/products?page=${page}`)
         // console.log(response);
-        // this.productName = response.data.data;
+        this.productIndex = response.data
+        
         this.productResponse = response.data
         const productsWithImages = await Promise.all(
           response.data.data.map(async (p) => {
             if (p.image) {
-              p.imageUrl = await this.getImageUrl(p.image); // Ensure awaiting the image URL
+              p.imageUrl = await this.getImageUrl(p.image); 
             }
-            return p; // Return the product with the imageUrl added
+            return p; 
           })
         );
-
-        // Set the productName array once all images are fetched
-        this.productName = productsWithImages;
-        console.log(this.productName);
-        
-        
-        
+        this.productIndex = productsWithImages;
+                        
       } catch (error) {
         console.log(error.message)          
       }
@@ -80,7 +76,9 @@ export const useProductStore = defineStore("product", {
       try {
         const response = await axios.get("api/products/" + id);
         this.singleProduct = response.data.data;
-        let test = response.data.data.name
+        this.singleProduct.imageUrl = await this.getImageUrl(this.singleProduct.image)
+        console.log(this.singleProduct);
+                
         // console.log(he.encode(test));
         
       } catch (error) {
@@ -146,7 +144,7 @@ export const useProductStore = defineStore("product", {
     },
 
     setProductReady() {
-      const filtered = this.productName.filter(
+      const filtered = this.productIndex.filter(
         (item) => item.isDisplayed === true
       );
 
@@ -155,10 +153,10 @@ export const useProductStore = defineStore("product", {
 
     async handleToggleReady(index) {
       //toggle buat liat textbox/textarea untuk 'tulis catatan'
-      this.productName[index].isDisplayed =
-        !this.productName[index].isDisplayed;
+      this.productIndex[index].isDisplayed =
+        !this.productIndex[index].isDisplayed;
       try {
-        const response = await axios.put("api/products/" + this.productName[index].id, this.productName[index]);
+        const response = await axios.put("api/products/" + this.productIndex[index].id, this.productIndex[index]);
         console.log(response);
       } catch (error) {
         console.log(error);
@@ -186,7 +184,7 @@ export const useProductStore = defineStore("product", {
     async searchProduct(name) {
       try {
         const response = await axios.get(`api/search?name=${name}`);
-        this.productName = response.data;
+        this.productIndex = response.data;
         console.log(response);
       } catch (error) {
         console.error(error);
@@ -194,7 +192,7 @@ export const useProductStore = defineStore("product", {
     },
 
     clearSearchResults() {
-      this.productName = [];
+      this.productIndex = [];
     },
 
     async fetchImage(imagePath) {

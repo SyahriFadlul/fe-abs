@@ -7,24 +7,24 @@ const cartStore = useCartStore()
     <div id="mobileFooter" class="uk-container uk-container-expand uk-position-fixed uk-position-bottom uk-position-z-index uk-text-center uk-hidden@s">
         <div class="uk-margin uk-child-width-expand uk-width-1-1 uk-grid uk-grid-small uk-text-center" uk-grid>
             <router-link to="/" class="uk-text-decoration-none item">
-                <img src="../../assets/home.svg" alt="">
+                <img src="@/assets/home.svg" alt="">
             </router-link>
             <router-link to="/cart" class="uk-text-decoration-none item">
-                <img src="../../assets/cart.svg" alt="">
+                <img src="@/assets/cart.svg" alt="">
                 <span class="cart-count" v-show="cartStore.qtys > 0">{{ cartStore.qtys }}</span>
             </router-link>
             <div>
                 <a href="" class="uk-text-decoration-none item">
                     <div class="logo">
-                        <img src="../../assets/logo-sm.png" class="uk-border-circle" alt="" >
+                        <img src="@/assets/logo-sm.png" class="uk-border-circle" alt="" >
                     </div>
                 </a>
             </div>
             <a href="#" class="uk-text-decoration-none item">
-                <img src="../../assets/bell.svg" alt="">
+                <img src="@/assets/bell.svg" alt="">
             </a>
             <router-link to="/profile/menu" class="uk-text-decoration-none item">
-                <img src="../../assets/user.svg" alt="">
+                <img src="@/assets/user.svg" alt="">
             </router-link>
         </div>
     </div>

@@ -29,7 +29,8 @@ const redirectToCart = function () {
   router.push('/cart')
 }
 
-onMounted(async () => {     
+onMounted(async () => {       
+  
 });
 </script>
 <template>
@@ -52,7 +53,7 @@ onMounted(async () => {
               />
             </router-link>
             <router-link to="/" class="uk-hidden@s">
-              <img src="../../assets/logo-sm.png" alt="" width="120">
+              <img src="@/assets/logo-sm.png" alt="" width="120">
             </router-link>
           </div>
 
@@ -113,16 +114,16 @@ onMounted(async () => {
                           <span class="cartLink">Lihat Semua</span>
                         </a>
                       </div>
-                      <div class="uk-grid-small uk-grid cart-items-container"  v-for="product in cartStore.item" :key="product.id" @click="redirectToCart()" uk-grid>
+                      <div class="uk-grid-small uk-grid cart-items-container"  v-for="item in cartStore.item" :key="item.id" @click="redirectToCart()" uk-grid>
                         <div class="uk-first-column">
-                          <img :src="backendPath + '/storage/' + product.product_id.image" width="100" height="auto" >
+                          <img :src="item.product_id.imageUrl" width="100" height="auto" >
                         </div>
                         <div class="uk-width-expand">
-                          <p class="uk-margin-remove uk-padding-remove" style="font-weight: 600;">{{ product.product_id.name}}</p>
-                          <small class="uk-margin-remove" >{{ product.qty }} barang</small>
+                          <p class="uk-margin-remove uk-padding-remove" style="font-weight: 600;">{{ item.product_id.name}}</p>
+                          <small class="uk-margin-remove" >{{ item.qty }} barang</small>
                         </div>
                         <div class="uk-width-auto">
-                          <strong class="" style="font-weight: 500;color: #2C6629;">Rp. {{ rupiahNum(product.product_id.price) }}</strong>
+                          <strong class="" style="font-weight: 500;color: #2C6629;">Rp. {{ rupiahNum(item.product_id.price) }}</strong>
                         </div>                        
                       </div>
                     </template>

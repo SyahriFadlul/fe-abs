@@ -28,7 +28,7 @@ onMounted(async () => {
             <div class="uk-grid-match uk-child-width-1-4@m uk-child-width-1-3@s uk-child-width-1-1 uk-text-center uk-margin-medium-bottom" uk-grid>
                 <div v-for="item in wishlistStore.items" :key="item.id">
                     <div class="uk-card-small uk-card-default">
-                        <img :src="backendPath + item.product_id.image" alt="">
+                        <img :src="item.product_id.imageUrl" alt="">
                         <div class="uk-card-body uk-background-muted uk-text-left uk-border-rounded">
                             <p class="uk-margin-remove uk-text-bold uk-text-medium" style="color: black;">Rp{{ rupiahNum(item.product_id.price) }}</p>
                             <p class="uk-margin-remove">{{ item.product_id.name }}</p>

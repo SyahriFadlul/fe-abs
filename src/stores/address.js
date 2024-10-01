@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import axios from "axios";
 import UIkit from "uikit";
 import { useAuthStore } from "./auth";
+import { useCourierStore } from "./courier";
 
 export const useAddressStore = defineStore("address", {
   state: () => ({
@@ -30,12 +31,12 @@ export const useAddressStore = defineStore("address", {
     },
 
     async setMainAddress(index) {
-      this.addresses.forEach(address => { //reset properti ismainaddress
-        address.isMainAddress = false
+      this.addresses.forEach(address => { //reset properti is_main_address
+        address.is_main_address = false
       })
       
-      //masukin address yang punya key 'ismainaddress' dengan value true ke state addressmain
-      this.addresses[index].isMainAddress = true
+      //masukin address yang punya key 'is_main_address' dengan value true ke state addressmain
+      this.addresses[index].is_main_address = true
       this.addressMain = this.addresses[index]
       
       const id = this.addresses[index].id
@@ -51,8 +52,8 @@ export const useAddressStore = defineStore("address", {
       .catch( err => console.log(err.message))
     },
 
-    getSelectedAddress(index){
-      this.selectedAddress = this.addresses[index]
+    async getSelectedAddress(index){ //khusus halaman cart/shipment  /   checkoutproduct.vue
+      this.selectedAddress = this.addresses[index] //set selected addr    
       UIkit.modal("#modal-alamat-checkout").hide()
     },
 

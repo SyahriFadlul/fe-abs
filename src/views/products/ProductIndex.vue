@@ -133,7 +133,7 @@ onMounted(async () => {
                         <tbody class="cursor-pointer">
                             <tr v-for="(product, index) in productStore.item" :key="product.id">
                                 <td class="uk-table-expand uk-text-center">
-                                    <img :src="backendPath + '/storage/' + product.image" alt="" width="150"></td>
+                                    <img :src="product.image" alt="" width="150"></td>
                                 <td @click="detailProduct(product.id)" uk-tooltip="pos: top-left;  title:  "
                                     class="uk-table-expand">
                                     {{ product.name }}
